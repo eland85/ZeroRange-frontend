@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔒 Secure Exhibition Grid</title>
+    <title>🌐 Interactive Archive</title>
     <style>
         * {
             margin: 0;
@@ -35,23 +35,25 @@
         }
         
         .subtitle {
-            font-size: 1em;
+            font-size: 1.2em;
             color: #888;
             font-weight: 300;
+            margin-bottom: 15px;
         }
         
-        .security-badge {
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
-            color: #000;
-            padding: 8px 16px;
+        .public-status {
+            font-size: 1em;
+            color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 10px 20px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+            border: 1px solid #00ff88;
             display: inline-block;
-            margin-top: 10px;
         }
         
-        .config-panel {
+        /* ADMIN PANEL - Hidden by default */
+        .admin-panel {
+            display: none;
             background: rgba(40, 40, 40, 0.9);
             border: 1px solid #555;
             border-radius: 10px;
@@ -62,11 +64,28 @@
             margin-right: auto;
         }
         
-        .config-title {
-            color: #00ff88;
+        .admin-panel.visible {
+            display: block;
+        }
+        
+        .admin-title {
+            color: #ff6b6b;
             font-size: 18px;
             margin-bottom: 15px;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .admin-notice {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 12px;
         }
         
         .config-group {
@@ -126,6 +145,11 @@
             font-size: 12px;
             border: 1px solid #333;
             z-index: 1000;
+            display: none;
+        }
+        
+        .stats.visible {
+            display: block;
         }
         
         .stat-item {
@@ -303,17 +327,47 @@
             background: rgba(255, 107, 107, 0.1);
             border: 1px solid #ff6b6b;
         }
+
+        /* Admin mode indicator */
+        .admin-indicator {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 107, 107, 0.9);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1001;
+            display: none;
+        }
+        
+        .admin-indicator.visible {
+            display: block;
+        }
     </style>
 </head>
 <body>
+    <!-- Admin Mode Indicator -->
+    <div class="admin-indicator" id="admin-indicator">
+        🔧 ADMIN MODE - Press Ctrl+A to hide
+    </div>
+
     <div class="header">
-        <div class="title">🔒 SECURE EXHIBITION</div>
-        <div class="subtitle">No API keys exposed to browser</div>
-        <div class="security-badge">🛡️ Server-Side Authentication</div>
+        <div class="title">🌐 INTERACTIVE ARCHIVE</div>
+        <div class="subtitle">Living documentation of participant interactions</div>
+        <div class="public-status" id="public-status">
+            Loading archive...
+        </div>
     </div>
     
-    <div class="config-panel">
-        <div class="config-title">🔧 Secure Configuration</div>
+    <!-- ADMIN PANEL - Hidden by default -->
+    <div class="admin-panel" id="admin-panel">
+        <div class="admin-title">🔧 Administrator Controls</div>
+        <div class="admin-notice">
+            <strong>ADMIN MODE:</strong> Press Ctrl+A to hide this panel from public view
+        </div>
         
         <div id="server-status" class="server-status offline">
             <strong>🔌 Connecting to secure backend...</strong>
@@ -324,9 +378,6 @@
             <input type="text" id="sheets-id" class="config-input" 
                    value="2PACX-1vSmKN8EyluzeMhEyb8-AirHdPM5qfU3OUbvGWsJe9rrn6lRlFbDLmV1F9fdMJIt9ZpdyYobh-fdASWR"
                    placeholder="1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p">
-            <small style="color: #888; font-size: 10px;">
-                From: https://docs.google.com/spreadsheets/d/<strong>SHEET_ID_HERE</strong>/edit
-            </small>
         </div>
         
         <div class="config-group">
@@ -334,9 +385,6 @@
             <input type="text" id="folder-id" class="config-input" 
                    value="1_WIs7bQ0IlsczjqoL6hmAvskuA9uDcNB"
                    placeholder="1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p">
-            <small style="color: #888; font-size: 10px;">
-                From: https://drive.google.com/drive/folders/<strong>FOLDER_ID_HERE</strong>
-            </small>
         </div>
         
         <div style="text-align: center;">
@@ -349,7 +397,8 @@
         <div id="messages"></div>
     </div>
     
-    <div class="stats">
+    <!-- ADMIN STATS - Hidden by default -->
+    <div class="stats" id="stats">
         <div class="stat-item">
             <span>Server Status:</span>
             <span class="stat-value" id="server-indicator">❌ Offline</span>
@@ -371,13 +420,13 @@
             <span class="stat-value" id="loaded-count">0</span>
         </div>
         <div class="stat-item">
-            <span>Last Check:</span>
+            <span>Last Update:</span>
             <span class="stat-value" id="last-update">Never</span>
         </div>
     </div>
     
     <div class="loading-indicator" id="loading-indicator">
-        🔄 Securely checking backend...
+        🔄 Updating archive...
     </div>
     
     <div class="grid-container">
@@ -387,9 +436,9 @@
     </div>
 
     <script>
-        // Configuration - NO API KEYS HERE!
+        // Configuration
         const CONFIG = {
-            backendUrl: 'https://web-production-45622.up.railway.app',  // Your secure backend
+            backendUrl: 'https://web-production-45622.up.railway.app',
             refreshInterval: 30000 // 30 seconds
         };
         
@@ -399,6 +448,7 @@
         let loadedImages = new Set();
         let refreshTimer = null;
         let serverOnline = false;
+        let adminMode = false;
         
         // Demo data
         const DEMO_DATA = [
@@ -408,6 +458,49 @@
             {nameArabic: "مريم خالد", nameEnglish: "Mariam Khalid", nameHebrew: "מרים חאלד", dateOfBirth: "1989-05-14", index: 4},
             {nameArabic: "عمر سالم", nameEnglish: "Omar Salem", nameHebrew: "עומר סאלם", dateOfBirth: "1985-12-03", index: 5}
         ];
+        
+        // Admin mode toggle
+        function toggleAdminMode() {
+            adminMode = !adminMode;
+            
+            const adminPanel = document.getElementById('admin-panel');
+            const stats = document.getElementById('stats');
+            const adminIndicator = document.getElementById('admin-indicator');
+            
+            if (adminMode) {
+                adminPanel.classList.add('visible');
+                stats.classList.add('visible');
+                adminIndicator.classList.add('visible');
+                console.log('🔧 Admin mode enabled');
+            } else {
+                adminPanel.classList.remove('visible');
+                stats.classList.remove('visible');
+                adminIndicator.classList.remove('visible');
+                console.log('👁️ Public mode enabled');
+            }
+        }
+        
+        // Keyboard shortcut for admin mode
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'a') {
+                event.preventDefault();
+                toggleAdminMode();
+            }
+        });
+        
+        // Update public status display
+        function updatePublicStatus() {
+            const totalParticipants = participantData.length;
+            const recognizedCount = loadedImages.size;
+            
+            if (totalParticipants > 0) {
+                document.getElementById('public-status').textContent = 
+                    `${recognizedCount} of ${totalParticipants} participants recognized`;
+            } else {
+                document.getElementById('public-status').textContent = 
+                    'Loading archive...';
+            }
+        }
         
         async function checkServerConnection() {
             try {
@@ -425,7 +518,7 @@
                          Authentication: API Key<br>
                          Server time: ${new Date(data.timestamp).toLocaleTimeString()}`;
                     
-                    showMessage('✅ Connected to secure backend!', 'success');
+                    if (adminMode) showMessage('✅ Connected to secure backend!', 'success');
                 } else {
                     throw new Error(`Server returned ${response.status}`);
                 }
@@ -435,10 +528,9 @@
                 document.getElementById('server-status').className = 'server-status offline';
                 document.getElementById('server-status').innerHTML = 
                     `<strong>❌ Cannot connect to secure backend</strong><br>
-                     Make sure Python server is running on localhost:5000<br>
                      Error: ${error.message}`;
                 
-                showMessage('❌ Backend connection failed. Start the Python server first.', 'error');
+                if (adminMode) showMessage('❌ Backend connection failed.', 'error');
             } finally {
                 hideLoading();
             }
@@ -446,19 +538,19 @@
         
         async function discoverImages() {
             if (!serverOnline) {
-                showMessage('❌ Backend not connected. Check connection first.', 'error');
+                if (adminMode) showMessage('❌ Backend not connected. Check connection first.', 'error');
                 return;
             }
             
             const folderId = document.getElementById('folder-id').value.trim();
             if (!folderId) {
-                showMessage('❌ Please enter Google Drive folder ID', 'error');
+                if (adminMode) showMessage('❌ Please enter Google Drive folder ID', 'error');
                 return;
             }
             
             try {
-                showLoading();
-                showMessage('🔍 Securely discovering images...', 'info');
+                if (adminMode) showLoading();
+                if (adminMode) showMessage('🔍 Securely discovering images...', 'info');
                 
                 const response = await fetch(`${CONFIG.backendUrl}/api/discover/${folderId}`);
                 const data = await response.json();
@@ -468,29 +560,22 @@
                     document.getElementById('discovered-count').textContent = data.total_found;
                     
                     console.log('🎯 Discovered images:', discoveredImages);
-                    showMessage(`🎉 Found ${data.total_found} images! Ready to start exhibition.`, 'success');
-                    
-                    // Show details of found images
-                    const imageList = Object.keys(discoveredImages).map(key => 
-                        `${key}: ${discoveredImages[key].name}`
-                    ).join(', ');
-                    console.log('📋 Image mapping:', imageList);
-                    
+                    if (adminMode) showMessage(`🎉 Found ${data.total_found} images!`, 'success');
                 } else {
                     throw new Error(data.error || 'Discovery failed');
                 }
             } catch (error) {
-                showMessage(`❌ Discovery failed: ${error.message}`, 'error');
+                if (adminMode) showMessage(`❌ Discovery failed: ${error.message}`, 'error');
                 console.error('Discovery error:', error);
             } finally {
-                hideLoading();
+                if (adminMode) hideLoading();
             }
         }
         
         async function loadGoogleSheets() {
             const sheetsId = document.getElementById('sheets-id').value.trim();
             if (!sheetsId) {
-                showMessage('❌ Please enter Google Sheets ID', 'error');
+                if (adminMode) showMessage('❌ Please enter Google Sheets ID', 'error');
                 return;
             }
             
@@ -503,21 +588,22 @@
                     document.getElementById('sheets-status').textContent = '✅ Loaded';
                     document.getElementById('total-count').textContent = participantData.length;
                     
-                    showMessage(`✅ Loaded ${participantData.length} participants from Google Sheets`, 'success');
+                    updatePublicStatus();
+                    if (adminMode) showMessage(`✅ Loaded ${participantData.length} participants`, 'success');
                     return true;
                 } else {
                     throw new Error(data.error || 'Failed to load sheets');
                 }
             } catch (error) {
                 document.getElementById('sheets-status').textContent = '❌ Error';
-                showMessage(`❌ Sheets error: ${error.message}`, 'error');
+                if (adminMode) showMessage(`❌ Sheets error: ${error.message}`, 'error');
                 return false;
             }
         }
         
         async function startExhibition() {
             if (!serverOnline) {
-                showMessage('❌ Backend not connected', 'error');
+                if (adminMode) showMessage('❌ Backend not connected', 'error');
                 return;
             }
             
@@ -525,16 +611,13 @@
             const sheetsLoaded = await loadGoogleSheets();
             if (!sheetsLoaded) return;
             
-            // Check if we have discovered images
-            if (Object.keys(discoveredImages).length === 0) {
-                showMessage('❌ No images discovered yet. Click "📸 Discover Images" first.', 'error');
-                return;
-            }
+            // Discover images
+            await discoverImages();
             
             // Create grid and start
             createGrid();
             startAutoRefresh();
-            showMessage('🚀 Exhibition started! Images will auto-update securely.', 'success');
+            if (adminMode) showMessage('🚀 Exhibition started! Auto-updating.', 'success');
         }
         
         function parseCSV(csvText) {
@@ -582,7 +665,7 @@
                     formatDate(participant.dateOfBirth) : '';
                 
                 const hasImage = discoveredImages[participant.index];
-                const placeholderText = hasImage ? 'Image found!' : 'Waiting for image...';
+                const placeholderText = hasImage ? 'Recognition found' : 'Awaiting interaction...';
                 
                 cell.innerHTML = `
                     <div class="cell-index">#${participant.index}</div>
@@ -600,7 +683,7 @@
             
             // Load discovered images
             loadDiscoveredImages();
-            console.log(`🏗️ Created secure grid with ${participantData.length} cells`);
+            console.log(`🏗️ Created exhibition grid with ${participantData.length} participants`);
         }
         
         function formatDate(dateString) {
@@ -617,32 +700,20 @@
         }
         
         function loadDiscoveredImages() {
-            console.log('🔍 loadDiscoveredImages called');
-            console.log('📊 participantData length:', participantData.length);
-            console.log('📊 discoveredImages keys:', Object.keys(discoveredImages));
-            console.log('📊 loadedImages size:', loadedImages.size);
-            
             for (const participant of participantData) {
                 const index = participant.index;
-                console.log(`🔄 Checking participant ${index}: ${participant.nameEnglish}`);
                 
                 if (!loadedImages.has(index) && discoveredImages[index]) {
                     const imageData = discoveredImages[index];
-                    console.log(`🎯 Found image data for ${index}:`, imageData);
-                    
-                    // Use proxy URL instead of direct Google Drive URL
                     const proxyUrl = `${CONFIG.backendUrl}/api/proxy-image/${imageData.id}`;
-                    console.log(`🔗 Using proxy URL: ${proxyUrl}`);
-                    
                     loadImageIntoCell(index, proxyUrl);
                     loadedImages.add(index);
-                    console.log(`✅ Securely loaded via proxy: ${imageData.name} → Position ${index}`);
-                } else {
-                    console.log(`⏭️ Skipping ${index}: already loaded=${loadedImages.has(index)}, has image=${!!discoveredImages[index]}`);
+                    console.log(`✅ Recognition loaded: ${imageData.name} → Position ${index}`);
                 }
             }
             
             updateStats();
+            updatePublicStatus();
         }
         
         function loadImageIntoCell(index, imagePath) {
@@ -654,21 +725,21 @@
             
             const img = document.createElement('img');
             img.className = 'cell-image';
-            img.src = imagePath; // Use the proxy URL directly
-            img.alt = `Participant ${index}`;
+            img.src = imagePath;
+            img.alt = `Participant ${index} recognition`;
             
             img.onload = () => {
                 img.classList.add('loaded');
                 cell.classList.add('has-image');
-                console.log(`✅ Image loaded for position ${index} via: ${imagePath}`);
+                updatePublicStatus();
+                console.log(`✅ Recognition displayed for position ${index}`);
             };
             
             img.onerror = () => {
-                console.warn(`❌ Failed to load image for position ${index}: ${img.src}`);
-                // Show error placeholder
+                console.warn(`❌ Failed to load recognition for position ${index}`);
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'empty-placeholder';
-                errorDiv.textContent = 'Image failed to load';
+                errorDiv.textContent = 'Recognition unavailable';
                 errorDiv.style.color = '#ff6b6b';
                 cell.appendChild(errorDiv);
             };
@@ -680,7 +751,6 @@
             if (refreshTimer) clearInterval(refreshTimer);
             
             refreshTimer = setInterval(async () => {
-                // Rediscover images through secure backend
                 const folderId = document.getElementById('folder-id').value.trim();
                 if (folderId && serverOnline) {
                     try {
@@ -693,8 +763,9 @@
                             
                             if (newImageCount > oldImageCount) {
                                 discoveredImages = data.images;
+                                document.getElementById('discovered-count').textContent = newImageCount;
                                 loadDiscoveredImages();
-                                console.log(`🔄 Auto-discovered ${newImageCount - oldImageCount} new images via proxy`);
+                                console.log(`🔄 Auto-discovered ${newImageCount - oldImageCount} new recognitions`);
                             }
                         }
                     } catch (error) {
@@ -705,7 +776,7 @@
                 updateStats();
             }, CONFIG.refreshInterval);
             
-            console.log('🔄 Secure auto-refresh started');
+            console.log('🔄 Auto-refresh started (30s intervals)');
         }
         
         function updateStats() {
@@ -714,6 +785,8 @@
         }
         
         function showMessage(text, type = 'info') {
+            if (!adminMode) return; // Only show messages in admin mode
+            
             const messages = document.getElementById('messages');
             const div = document.createElement('div');
             div.className = `message ${type}`;
@@ -738,12 +811,11 @@
             document.getElementById('sheets-status').textContent = '🎮 Demo';
             document.getElementById('total-count').textContent = participantData.length;
             
-            // Simulate discovered images
             discoveredImages = {};
             [1, 3, 5].forEach(index => {
                 discoveredImages[index] = {
                     id: `demo_${index}`,
-                    name: `image_${index}.jpg`,
+                    name: `recognition_${index}.jpg`,
                     url: `demo_url_${index}`
                 };
             });
@@ -752,16 +824,16 @@
             
             createGrid();
             
-            // Simulate loading demo images
             setTimeout(() => {
                 [1, 3, 5].forEach(index => {
                     simulateDemoImage(index);
                     loadedImages.add(index);
                 });
                 updateStats();
+                updatePublicStatus();
             }, 1000);
             
-            showMessage('🎮 Demo mode: Secure backend simulation', 'success');
+            if (adminMode) showMessage('🎮 Demo mode activated', 'success');
         }
         
         function simulateDemoImage(index) {
@@ -785,7 +857,7 @@
             ctx.textAlign = 'center';
             ctx.fillText(`#${index}`, 100, 100);
             ctx.font = '14px Arial';
-            ctx.fillText('Secure!', 100, 130);
+            ctx.fillText('Demo', 100, 130);
             
             const img = document.createElement('img');
             img.className = 'cell-image';
@@ -795,6 +867,7 @@
             img.onload = () => {
                 img.classList.add('loaded');
                 cell.classList.add('has-image');
+                updatePublicStatus();
             };
             
             cell.appendChild(img);
@@ -802,11 +875,16 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🔒 Secure Exhibition Grid initialized');
+            console.log('🌐 Interactive Archive initialized');
             updateStats();
             
-            // Auto-check server connection
-            setTimeout(checkServerConnection, 1000);
+            // Auto-start the exhibition
+            setTimeout(async () => {
+                await checkServerConnection();
+                if (serverOnline) {
+                    await startExhibition();
+                }
+            }, 1000);
         });
     </script>
 </body>
