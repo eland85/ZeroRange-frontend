@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌐 Interactive Archive</title>
+    <title>טווח אפס | مسافة صفر | Zero Range - Memory Cards</title>
     <style>
         * {
             margin: 0;
@@ -12,9 +12,9 @@
         }
         
         body {
-            background: #000;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
+            background: #000000;
+            color: #333;
+            font-family: "TheBasics";
             overflow-x: hidden;
             padding: 20px;
         }
@@ -22,8 +22,11 @@
         .header {
             text-align: center;
             padding: 20px 0 40px 0;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #ddd;
             margin-bottom: 40px;
+            background: rgb(0, 0, 0);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .title {
@@ -31,37 +34,37 @@
             font-weight: 300;
             letter-spacing: 3px;
             margin-bottom: 10px;
-            color: #00ff88;
+            color: #ffffff;
         }
         
         .subtitle {
             font-size: 1.2em;
-            color: #888;
+            color: #ffffff;
             font-weight: 300;
-            margin-bottom: 15px;
+            margin-bottom: 50px;
         }
         
         .public-status {
-            font-size: 1em;
-            color: #00ff88;
-            background: rgba(0, 255, 136, 0.1);
+            font-size: 30px;
+            color: #ffffff;
+            background: rgba(148, 147, 147, 0.1);
             padding: 10px 20px;
             border-radius: 20px;
-            border: 1px solid #00ff88;
             display: inline-block;
         }
         
         /* ADMIN PANEL - Hidden by default */
         .admin-panel {
             display: none;
-            background: rgba(40, 40, 40, 0.9);
-            border: 1px solid #555;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ddd;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 30px;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .admin-panel.visible {
@@ -69,7 +72,7 @@
         }
         
         .admin-title {
-            color: #ff6b6b;
+            color: #e74c3c;
             font-size: 18px;
             margin-bottom: 15px;
             text-align: center;
@@ -78,9 +81,9 @@
         }
         
         .admin-notice {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid #ff6b6b;
-            color: #ff6b6b;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 15px;
@@ -96,28 +99,28 @@
             display: block;
             margin-bottom: 5px;
             font-size: 12px;
-            color: #ccc;
+            color: #666;
         }
         
         .config-input {
             width: 100%;
             padding: 8px;
-            background: #222;
-            border: 1px solid #555;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            color: #fff;
+            color: #333;
             font-size: 11px;
             font-family: monospace;
         }
         
         .config-input:focus {
-            border-color: #00ff88;
+            border-color: #3498db;
             outline: none;
         }
         
         .btn {
-            background: #00ff88;
-            color: #000;
+            background: #3498db;
+            color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
@@ -125,13 +128,9 @@
             font-weight: bold;
             margin: 5px;
         }
-        
-        .btn:hover {
-            background: #00cc6a;
-        }
-        
+          
         .btn-danger {
-            background: #ff6b6b;
+            background: #e74c3c;
             color: #fff;
         }
         
@@ -139,13 +138,14 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 15px;
             border-radius: 8px;
             font-size: 12px;
-            border: 1px solid #333;
+            border: 1px solid #ddd;
             z-index: 1000;
             display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .stats.visible {
@@ -160,126 +160,179 @@
         }
         
         .stat-value {
-            color: #00ff88;
+            color: #ffffff;
             font-weight: bold;
         }
         
         .grid-container {
-            max-width: 1400px;
+            max-width: flex;
             margin: 0 auto;
+
         }
         
         .grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
             padding: 20px 0;
         }
         
-        .grid-cell {
-            aspect-ratio: 1;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 15px;
+        /* Memory Card Styles */
+        .memory-card {
+            width: 400px;
+            height: 550px;
+            background: #000000;
+            border: 3px solid #3e3e3e;
+            padding: 20px;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0);
+            transition: all 1s ease;
+            position: relative;
+        }
+
+        .memory-card:hover {
+            /*transform: translateY(-2px);*/
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .memory-card.has-image {
+            box-shadow: 0 0 20px rgba(169, 169, 169, 0);
+        }
+        
+        .date-time {
+            font-size: 16px;
+            color: #ffffff86;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.495);
+
+        }
+
+        .visitor-number {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            background: #000000;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .visitor-words {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+
+        }
+
+        .visitor-hebrew, .visitor-arabic, .visitor-english {
+            font-size: 20px;
+        }
+
+        .visitor-num {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000000;
+            border: 2px dashed #88888890;
+            display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            position: relative;
-            background: #111;
-        }
-        
-        .grid-cell.has-image {
-            border-color: #00ff88;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
-        }
-        
-        .cell-name {
-            font-size: 11px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 8px;
-            color: #fff;
-            line-height: 1.2;
-            height: 55px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .name-arabic {
+            color: #ffffff;
             font-size: 12px;
-            margin-bottom: 2px;
-            direction: rtl;
-            font-family: 'Arial Unicode MS', 'Tahoma', sans-serif;
+            margin: 8px 0 20px 0;
+            transition: all 0.3s ease;
+            margin-top: 135px;
+            margin-bottom: 30px;
         }
-        
-        .name-english {
-            font-size: 10px;
-            margin-bottom: 2px;
-            color: #ccc;
-        }
-        
-        .name-hebrew {
-            font-size: 10px;
-            margin-bottom: 2px;
-            direction: rtl;
-            font-family: 'Arial Unicode MS', 'David', sans-serif;
-            color: #aaa;
-        }
-        
-        .date-birth {
-            font-size: 8px;
-            color: #888;
-            font-weight: normal;
-        }
-        
-        .cell-index {
-            position: absolute;
-            top: 5px;
-            left: 8px;
-            font-size: 10px;
-            color: #666;
-            font-weight: normal;
-        }
-        
-        .cell-image {
+
+
+        .card-image {
             width: 100%;
-            height: 45%;
+            aspect-ratio: 16 / 9;
             object-fit: cover;
             border-radius: 4px;
+            margin: 8px 0 20px 0;
             opacity: 0;
+            padding-bottom: 15px;
             transition: opacity 0.5s ease;
         }
         
-        .cell-image.loaded {
+        .card-image.loaded {
             opacity: 1;
         }
         
-        .empty-placeholder {
-            width: 100%;
-            height: 45%;
-            border: 2px dashed #333;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            color: #555;
+        .for-text {
+            font-size: 15px;
+            color: #ffffffb4;
+            margin-bottom: 15px;
             text-align: center;
+            padding-bottom: 15px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.495);
+        }
+        
+        .name-arabic {
+            font-size: 16px;
+            color: #ffffff;
+            direction: rtl;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-family: 'TheBasics','Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', sans-serif;
+        }
+        
+        .name-hebrew {
+            font-size: 16px;
+            color: #ffffff;
+            direction: rtl;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-family: 'TheBasics','Noto Sans Hebrew', 'Arial Unicode MS', 'David', sans-serif;
+        }
+        
+        .name-english {
+            font-size: 15px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-weight: bold;
+            font-family: 'TheBasics','Noto Sans', sans-serif;
+        }
+        
+        .card-index {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            font-size: 30px;
+            color: #999;
+            font-weight: normal;
         }
         
         .loading-indicator {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid #00ff88;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid #3498db;
             padding: 10px 15px;
             border-radius: 20px;
             font-size: 12px;
             display: none;
+            color: #3498db;
         }
         
         .loading-indicator.active {
@@ -294,21 +347,21 @@
         }
         
         .message.error {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid #ff6b6b;
-            color: #ff6b6b;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
         }
         
         .message.success {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid #00ff88;
-            color: #00ff88;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
         }
         
         .message.info {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid #ffc107;
-            color: #ffc107;
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid #f39c12;
+            color: #f39c12;
         }
         
         .server-status {
@@ -319,13 +372,15 @@
         }
         
         .server-status.online {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid #00ff88;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
         }
         
         .server-status.offline {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid #ff6b6b;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
         }
 
         /* Admin mode indicator */
@@ -333,7 +388,7 @@
             position: fixed;
             top: 10px;
             left: 10px;
-            background: rgba(255, 107, 107, 0.9);
+            background: rgba(231, 76, 60, 0.9);
             color: #fff;
             padding: 5px 10px;
             border-radius: 15px;
@@ -346,6 +401,176 @@
         .admin-indicator.visible {
             display: block;
         }
+
+        /* Layout variations for visual interest */
+        /*.layout1 { border-left: 3px solid #3498db; }*/
+        /*.layout2 { border-top: 3px solid #e74c3c; }*/
+        /*.layout3 { border-right: 3px solid #2ecc71; }*/
+        /*.layout4 { border-bottom: 3px solid #f39c12; }*/
+        /*.layout5 { border: 2px solid #9b59b6; }*/
+        /*.layout6 { box-shadow: 0 4px 15px rgba(0,0,0,0.15); }*/
+        /*.layout7 { background: #fafafa; }*/
+        /*.layout8 { border-radius: 15px; }*/
+        /*.layout9 { border: 1px solid #34495e; }*/
+        /*.layout10 { background: linear-gradient(to bottom, #fff, #f8f8f8); }*/
+
+        .image-modal {
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.6s ease 0.2s;
+            padding: 40px;
+
+        }
+
+
+        .image-modal.visible {
+            visibility: visible;
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Container for image and info */
+        .modal-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 95vh;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.6s ease 0.2s;
+            object-fit: contain;
+        }
+
+        .image-modal.visible img {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-info {
+            color: rgb(255, 255, 255);
+            background: rgb(0, 0, 0);
+            backdrop-filter: blur(10px);
+            padding: 20px 25px;
+            border-radius: 2px;
+            font-size: 16px;
+            line-height: 1.6;
+            min-width: 400px;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.1s ease-out 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .image-modal.visible .modal-info {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .modal-info strong {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 10px;
+            color: rgb(255, 255, 255);
+        }
+
+        .modal-info small {
+            display: block;
+            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: rgb(124, 124, 124);
+            font-size: 100px;
+            cursor: pointer;
+            font-weight: bold;
+            user-select: none;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease 0.1s;
+            z-index: 10;
+        }
+
+        .image-modal.visible .close-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .close-btn:hover {
+            transform: scale(1.1);
+        }
+
+        @font-face {
+            font-family: 'TheBasics';
+            src: url('https://github.com/eland85/ZeroRange-frontend/blob/main/fonts/TheBasics-Medium.otf') format('opentype');
+            font-weight: 300;
+            font-style: normal;
+            font-display: auto; /* Improves loading performance */
+        }
+
+        @font-face {
+            font-family: 'TheBasics';
+            src: url('https://github.com/eland85/ZeroRange-frontend/blob/main/fonts/TheBasics-Black.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap; /* Improves loading performance */
+        }
+
+        @font-face {
+            font-family: 'TheBasics';
+            src: url('https://github.com/eland85/ZeroRange-frontend/blob/main/fonts/TheBasics-Black.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: auto;
+        }
+
+                /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .modal-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .image-modal img {
+                max-width: 90%;
+                max-height: 60vh;
+            }
+            
+            .modal-info {
+                transform: translateY(30px);
+                width: 90%;
+                max-width: 400px;
+            }
+            
+            .image-modal.visible .modal-info {
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -355,10 +580,22 @@
     </div>
 
     <div class="header">
-        <div class="title">🌐 INTERACTIVE ARCHIVE</div>
-        <div class="subtitle">Living documentation of participant interactions</div>
-        <div class="public-status" id="public-status">
-            Loading archive...
+        <div class="title" style="padding-bottom: 18px; display: flex; justify-content: center; align-items: flex-end; gap: 18px;">
+            <span style="order: 3; text-align: left; min-width: 120px;">Zero Range</span>
+            <span style="order: 2; text-align: center; min-width: 120px; display: flex; flex-direction: column; align-items: center;">
+            <span>مسافة صفر</span>
+            </span>
+            <span style="order: 1; text-align: right; min-width: 120px;">טווח אפס</span>
+        </div>
+        <div class="subtitle" style="display: flex; justify-content: center; align-items: flex-start; gap: 18px;">
+            <span style="order: 3; text-align: left; min-width: 120px;">An Embodied Archive</span>
+            <span style="order: 2; text-align: center; min-width: 120px; display: flex; flex-direction: column; align-items: center;">
+            <span>أرشيف مجسد</span>
+            </span>
+            <span style="order: 1; text-align: right; min-width: 120px;">ארכיון מגולם</span>
+        </div>
+        <div class="public-status" id="public-status" style="text-align: center;">
+            ...Loading
         </div>
     </div>
     
@@ -386,7 +623,6 @@
                    value="1_WIs7bQ0IlsczjqoL6hmAvskuA9uDcNB"
                    placeholder="1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p">
         </div>
-        
         <div style="text-align: center;">
             <button class="btn" onclick="checkServerConnection()">🔍 Check Connection</button>
             <button class="btn" onclick="discoverImages()">📸 Discover Images</button>
@@ -412,7 +648,7 @@
             <span class="stat-value" id="discovered-count">0</span>
         </div>
         <div class="stat-item">
-            <span>Participants:</span>
+            <span>Memory Cards:</span>
             <span class="stat-value" id="total-count">0</span>
         </div>
         <div class="stat-item">
@@ -426,12 +662,12 @@
     </div>
     
     <div class="loading-indicator" id="loading-indicator">
-        🔄 Updating archive...
+        🔄 Updating memory cards...
     </div>
     
     <div class="grid-container">
         <div class="grid" id="main-grid">
-            <!-- Grid will be populated by JavaScript -->
+            <!-- Memory cards will be populated by JavaScript -->
         </div>
     </div>
 
@@ -452,11 +688,16 @@
         
         // Demo data
         const DEMO_DATA = [
-            {nameArabic: "أحمد محمد", nameEnglish: "Ahmed Mohamed", nameHebrew: "אחמד מוחמד", dateOfBirth: "1990-03-15", index: 1},
-            {nameArabic: "فاطمة علي", nameEnglish: "Fatima Ali", nameHebrew: "פאטימה עלי", dateOfBirth: "1987-07-22", index: 2},
-            {nameArabic: "يوسف حسن", nameEnglish: "Youssef Hassan", nameHebrew: "יוסף חסן", dateOfBirth: "1992-11-08", index: 3},
-            {nameArabic: "مريم خالد", nameEnglish: "Mariam Khalid", nameHebrew: "מרים חאלד", dateOfBirth: "1989-05-14", index: 4},
-            {nameArabic: "عمر سالم", nameEnglish: "Omar Salem", nameHebrew: "עומר סאלם", dateOfBirth: "1985-12-03", index: 5}
+            {nameArabic: "لينا أبو شعر", nameEnglish: "Lina Abu Sha'ar", nameHebrew: "לינה אבו שאער", dateOfBirth: "15.2.2023", age: "6 חודשים", visitor: "187", time: "10:41", date: "10.7.2025", index: 1},
+            {nameArabic: "عبد الرحمن نصار", nameEnglish: "Abd al-Rahman Nassar", nameHebrew: "עבד א-רחמן נסאר", dateOfBirth: "2.12.2022", age: "11 חודשים", visitor: "192", time: "11:12", date: "10.7.2025", index: 2},
+            {nameArabic: "حيام أبو سعدة", nameEnglish: "Hayam Abu Saadeh", nameHebrew: "חיאם אבו סעדה", dateOfBirth: "10.1.2023", age: "9 חודשים", visitor: "200", time: "12:25", date: "10.7.2025", index: 3},
+            {nameArabic: "أمير شحادة", nameEnglish: "Amir Shahadeh", nameHebrew: "אמיר שחאדה", dateOfBirth: "1.4.2023", age: "5 חודשים", visitor: "204", time: "12:55", date: "10.7.2025", index: 4},
+            {nameArabic: "جود جواد", nameEnglish: "Joud Jawad", nameHebrew: "ג׳וד ג׳ואד", dateOfBirth: "20.6.2023", age: "3 חודשים", visitor: "209", time: "13:13", date: "10.7.2025", index: 5},
+            {nameArabic: "منى أبو سنينة", nameEnglish: "Mona Abu Sanina", nameHebrew: "מונא אבו סנינה", dateOfBirth: "5.3.2023", age: "4 חודשים", visitor: "213", time: "13:42", date: "10.7.2025", index: 6},
+            {nameArabic: "كريم درويش", nameEnglish: "Karim Darwish", nameHebrew: "כרים דרוויש", dateOfBirth: "7.1.2023", age: "6 חודשים", visitor: "220", time: "14:08", date: "10.7.2025", index: 7},
+            {nameArabic: "سياف أبو صلاح", nameEnglish: "Sayyaf Abu Salah", nameHebrew: "סיאף אבו צלאח", dateOfBirth: "30.11.2022", age: "7 חודשים", visitor: "225", time: "14:41", date: "10.7.2025", index: 8},
+            {nameArabic: "ليلى المصري", nameEnglish: "Layla al-Masri", nameHebrew: "לילא אל מסרי", dateOfBirth: "9.2.2023", age: "5 חודשים", visitor: "231", time: "15:17", date: "10.7.2025", index: 9},
+            {nameArabic: "آدم حمادة", nameEnglish: "Adam Hamadeh", nameHebrew: "אדם חמאדה", dateOfBirth: "18.6.2023", age: "1 חודש", visitor: "240", time: "15:45", date: "10.7.2025", index: 10}
         ];
         
         // Admin mode toggle
@@ -490,15 +731,15 @@
         
         // Update public status display
         function updatePublicStatus() {
-            const totalParticipants = participantData.length;
+            const totalCards = participantData.length;
             const recognizedCount = loadedImages.size;
             
-            if (totalParticipants > 0) {
+            if (totalCards > 0) {
                 document.getElementById('public-status').textContent = 
-                    `${recognizedCount} of ${totalParticipants} participants recognized`;
+                    `${totalCards} / ${recognizedCount}`;
             } else {
                 document.getElementById('public-status').textContent = 
-                    'Loading archive...';
+                    'Loading memory cards...';
             }
         }
         
@@ -589,7 +830,7 @@
                     document.getElementById('total-count').textContent = participantData.length;
                     
                     updatePublicStatus();
-                    if (adminMode) showMessage(`✅ Loaded ${participantData.length} participants`, 'success');
+                    if (adminMode) showMessage(`✅ Loaded ${participantData.length} memory cards`, 'success');
                     return true;
                 } else {
                     throw new Error(data.error || 'Failed to load sheets');
@@ -614,8 +855,8 @@
             // Discover images
             await discoverImages();
             
-            // Create grid and start
-            createGrid();
+            // Create memory cards and start
+            createMemoryCards();
             startAutoRefresh();
             if (adminMode) showMessage('🚀 Exhibition started! Auto-updating.', 'success');
         }
@@ -644,6 +885,10 @@
                     nameEnglish: values[headers.indexOf('nameenglish')] || `Participant ${i}`,
                     nameHebrew: values[headers.indexOf('namehebrew')] || `משתתף ${i}`,
                     dateOfBirth: values[headers.indexOf('dateofbirth')] || '',
+                    age: values[headers.indexOf('age')] || '',
+                    visitor: values[headers.indexOf('visitor')] || `${i}`,
+                    time: values[headers.indexOf('time')] || '00:00',
+                    date: values[headers.indexOf('date')] || '10.7.2025',
                     index: i
                 };
                 data.push(item);
@@ -652,51 +897,46 @@
             return data;
         }
         
-        function createGrid() {
+        function createMemoryCards() {
             const grid = document.getElementById('main-grid');
             grid.innerHTML = '';
             
-            participantData.forEach((participant) => {
-                const cell = document.createElement('div');
-                cell.className = 'grid-cell';
-                cell.id = `cell-${participant.index}`;
-                
-                const formattedDate = participant.dateOfBirth ? 
-                    formatDate(participant.dateOfBirth) : '';
+            participantData.forEach((participant, i) => {
+                const card = document.createElement('div');
+                card.className = `memory-card layout${(i % 10) + 1}`;
+                card.id = `card-${participant.index}`;
                 
                 const hasImage = discoveredImages[participant.index];
-                const placeholderText = hasImage ? 'Recognition found' : 'Awaiting interaction...';
-                
-                cell.innerHTML = `
-                    <div class="cell-index">#${participant.index}</div>
-                    <div class="cell-name">
-                        <div class="name-arabic">${participant.nameArabic}</div>
-                        <div class="name-english">${participant.nameEnglish}</div>
-                        <div class="name-hebrew">${participant.nameHebrew}</div>
-                        ${formattedDate ? `<div class="date-birth">${formattedDate}</div>` : ''}
+                const placeholderText = hasImage ? '' : '';
+
+                card.innerHTML = `
+                    <div class="date-time" style="display:none;">${participant.time}|${participant.date}</div>
+                    <div class="visitor-number" style="display:none;">
+                        <div class="visitor-words">
+                            <span style="font-size: 16px;">מבקר/ת</span>
+                            <span style="font-size: 16px; margin: 0 8px;">زائر/ة</span>
+                            <span style="font-size: 15px;">Visitor</span>
+                        </div>
+                        <div class="visitor-num">#${participant.visitor}</div>
                     </div>
-                    <div class="empty-placeholder">${placeholderText}</div>
+                    <div class="image-placeholder">${placeholderText}</div>
+                    <div class="for-text">
+                        <span style="display: inline-block; margin-right: 9px;">עבור</span>
+                        <span style="display: inline-block; margin: 0 9px;">إلى</span>
+                        <span style="display: inline-block; margin-left: 9px;">For</span>
+                    </div>
+                    <div class="name-arabic" style="text-align:center;">${participant.nameArabic}</div>
+                    <div class="name-hebrew" style="text-align:center;">${participant.nameHebrew}</div>
+                    <div class="name-english" style="text-align:center;">${participant.nameEnglish}</div>
                 `;
+
                 
-                grid.appendChild(cell);
+                grid.appendChild(card);
             });
             
             // Load discovered images
             loadDiscoveredImages();
-            console.log(`🏗️ Created exhibition grid with ${participantData.length} participants`);
-        }
-        
-        function formatDate(dateString) {
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                });
-            } catch (error) {
-                return dateString;
-            }
+            console.log(`🏗️ Created memory card exhibition with ${participantData.length} cards`);
         }
         
         function loadDiscoveredImages() {
@@ -706,9 +946,9 @@
                 if (!loadedImages.has(index) && discoveredImages[index]) {
                     const imageData = discoveredImages[index];
                     const proxyUrl = `${CONFIG.backendUrl}/api/proxy-image/${imageData.id}`;
-                    loadImageIntoCell(index, proxyUrl);
+                    loadImageIntoCard(index, proxyUrl);
                     loadedImages.add(index);
-                    console.log(`✅ Recognition loaded: ${imageData.name} → Position ${index}`);
+                    console.log(`✅ Image loaded: ${imageData.name} → Card ${index}`);
                 }
             }
             
@@ -716,36 +956,60 @@
             updatePublicStatus();
         }
         
-        function loadImageIntoCell(index, imagePath) {
-            const cell = document.getElementById(`cell-${index}`);
-            if (!cell) return;
-            
-            const placeholder = cell.querySelector('.empty-placeholder');
-            if (placeholder) placeholder.remove();
-            
+        function loadImageIntoCard(index, imagePath) {
+            const card = document.getElementById(`card-${index}`);
+            if (!card) return;
+
+            const placeholder = card.querySelector('.image-placeholder');
+            if (!placeholder) return;
+
             const img = document.createElement('img');
-            img.className = 'cell-image';
+            img.className = 'card-image';
             img.src = imagePath;
-            img.alt = `Participant ${index} recognition`;
-            
+            img.alt = `Memory card ${index} image`;
+
             img.onload = () => {
                 img.classList.add('loaded');
-                cell.classList.add('has-image');
+                placeholder.style.display = 'none';
+                placeholder.parentNode.insertBefore(img, placeholder);
+                card.classList.add('has-image');
+
+                // ✅ Update date/time dynamically
+                if (discoveredImages[index] && discoveredImages[index].modified) {
+                    const modifiedDate = new Date(discoveredImages[index].modified);
+                    const formattedDate = modifiedDate.toLocaleDateString('he-IL');
+                    const formattedTime = modifiedDate.toLocaleTimeString('he-IL', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    // Set date/time with flex layout for justification
+                    const dateTimeDiv = card.querySelector('.date-time');
+                    dateTimeDiv.innerHTML = `
+                        <span style="float: right; text-align: right; width: 48%;">${formattedTime}</span>
+                        <span style="float: left; text-align: left; width: 48%;">${formattedDate}</span>
+                        <span style="clear: both; display: block;"></span>
+                    `;
+                }
+
+                card.querySelector('.date-time').style.display = 'block';
+                card.querySelector('.visitor-number').style.display = 'block';
+
+                // ✅ CLICK TO OPEN MODAL
+                img.addEventListener('click', () => {
+                    openImageModal(img.src, card);
+                });
+
                 updatePublicStatus();
-                console.log(`✅ Recognition displayed for position ${index}`);
             };
-            
+
+
             img.onerror = () => {
-                console.warn(`❌ Failed to load recognition for position ${index}`);
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'empty-placeholder';
-                errorDiv.textContent = 'Recognition unavailable';
-                errorDiv.style.color = '#ff6b6b';
-                cell.appendChild(errorDiv);
+                console.warn(`❌ Failed to load image for card ${index}`);
+                placeholder.textContent = 'Image unavailable';
+                placeholder.style.color = '#e74c3c';
             };
-            
-            cell.appendChild(img);
         }
+
         
         function startAutoRefresh() {
             if (refreshTimer) clearInterval(refreshTimer);
@@ -765,7 +1029,7 @@
                                 discoveredImages = data.images;
                                 document.getElementById('discovered-count').textContent = newImageCount;
                                 loadDiscoveredImages();
-                                console.log(`🔄 Auto-discovered ${newImageCount - oldImageCount} new recognitions`);
+                                console.log(`🔄 Auto-discovered ${newImageCount - oldImageCount} new images`);
                             }
                         }
                     } catch (error) {
@@ -812,20 +1076,20 @@
             document.getElementById('total-count').textContent = participantData.length;
             
             discoveredImages = {};
-            [1, 3, 5].forEach(index => {
+            [1, 3, 5, 7, 9].forEach(index => {
                 discoveredImages[index] = {
                     id: `demo_${index}`,
-                    name: `recognition_${index}.jpg`,
+                    name: `memory_card_${index}.jpg`,
                     url: `demo_url_${index}`
                 };
             });
             
             document.getElementById('discovered-count').textContent = Object.keys(discoveredImages).length;
             
-            createGrid();
+            createMemoryCards();
             
             setTimeout(() => {
-                [1, 3, 5].forEach(index => {
+                [1, 3, 5, 7, 9].forEach(index => {
                     simulateDemoImage(index);
                     loadedImages.add(index);
                 });
@@ -833,59 +1097,141 @@
                 updatePublicStatus();
             }, 1000);
             
-            if (adminMode) showMessage('🎮 Demo mode activated', 'success');
+            if (adminMode) showMessage('🎮 Demo mode activated with memory cards', 'success');
         }
         
         function simulateDemoImage(index) {
-            const cell = document.getElementById(`cell-${index}`);
-            if (!cell) return;
+            const card = document.getElementById(`card-${index}`);
+            if (!card) return;
             
-            const placeholder = cell.querySelector('.empty-placeholder');
-            if (placeholder) placeholder.remove();
+            const placeholder = card.querySelector('.image-placeholder');
+            if (!placeholder) return;
             
             const canvas = document.createElement('canvas');
-            canvas.width = 200;
-            canvas.height = 200;
+            canvas.width = 300;
+            canvas.height = 170;
             const ctx = canvas.getContext('2d');
             
-            const hue = (index * 137.5) % 360;
-            ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
-            ctx.fillRect(0, 0, 200, 200);
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 300, 170);
+            const hue = (index * 60) % 360;
+            gradient.addColorStop(0, `hsl(${hue}, 60%, 70%)`);
+            gradient.addColorStop(1, `hsl(${(hue + 30) % 360}, 60%, 50%)`);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 300, 170);
             
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 24px Arial';
+            // Add text overlay
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(0, 120, 300, 50);
+            
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText(`#${index}`, 100, 100);
-            ctx.font = '14px Arial';
-            ctx.fillText('Demo', 100, 130);
+            ctx.fillText(`Memory Card #${index}`, 150, 140);
+            ctx.font = '12px Arial';
+            ctx.fillText('Demo Image', 150, 158);
             
             const img = document.createElement('img');
-            img.className = 'cell-image';
+            img.className = 'card-image';
             img.src = canvas.toDataURL();
-            img.alt = `Demo participant ${index}`;
+            img.alt = `Demo memory card ${index}`;
             
             img.onload = () => {
                 img.classList.add('loaded');
-                cell.classList.add('has-image');
+                placeholder.style.display = 'none';
+                placeholder.parentNode.insertBefore(img, placeholder);
+                card.classList.add('has-image');
                 updatePublicStatus();
             };
-            
-            cell.appendChild(img);
         }
         
         // Initialize
+
+        // ✅ Declare globally at top of script
+        let modal, modalImg, modalInfo, closeBtn;
+
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🌐 Interactive Archive initialized');
+            console.log('🌐 Memory Cards Exhibition initialized');
             updateStats();
             
+            // ✅ Initialize modal after DOM is ready
+            modal = document.getElementById('image-modal');
+            modalImg = document.querySelector('#image-modal .modal-image');
+            modalInfo = document.getElementById('modal-info');
+            closeBtn = document.querySelector('.close-btn');
+
+            closeBtn.onclick = () => modal.classList.remove('visible');
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.classList.remove('visible');
+            };
+
             // Auto-start the exhibition
             setTimeout(async () => {
                 await checkServerConnection();
                 if (serverOnline) {
                     await startExhibition();
+                } else {
+                    // Load demo data if server is offline
+                    loadDemoData();
                 }
             }, 1000);
         });
+
+
+
+        function openImageModal(src, card) {
+            modalImg.src = src;
+
+            const dateTime = card.querySelector('.date-time').textContent;
+            const visitor = card.querySelector('.visitor-num').textContent;
+            const nameArabic = card.querySelector('.name-arabic').textContent;
+            const nameHebrew = card.querySelector('.name-hebrew').textContent;
+            const nameEnglish = card.querySelector('.name-english').textContent;
+
+            modalInfo.innerHTML = `
+                <div class="modal-visitor-line">
+                    <span style="font-size: 14px;color: rgba(255,255,255,0.7);">מבקר.ת</span>
+                    <span style="font-size: 14px; color: rgba(255,255,255,0.7);margin: 0 8px;">زائر/ة</span>
+                    <span style="font-size: 13px;color: rgba(255,255,255,0.7);">Visitor</span>
+                </div>
+                <div style="font-size: 16px; font-weight: bold; margin-bottom: 15px; color: rgba(255,255,255,0.7);">${visitor}</div>
+                <strong>${nameArabic}</strong>
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${nameHebrew}</div>
+                <div style="font-size: 16px; font-weight: bold; color: rgba(255,255,255,0.9); text-align: right; direction: ltr;">${nameEnglish}</div>
+                <small>${dateTime}</small>
+            `;
+
+            // Force a reflow to ensure the transition works
+            modal.offsetHeight;
+            modal.classList.add('visible');
+        }
+
+        // Update the close handlers
+        closeBtn.onclick = () => {
+            modal.classList.remove('visible');
+        };
+
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('visible');
+            }
+        };
+
+        // Optional: Add keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('visible')) {
+                modal.classList.remove('visible');
+            }
+        });
+
     </script>
+<div id="image-modal" class="image-modal">
+    <span class="close-btn">&times;</span>
+    <div class="modal-content">
+        <img class="modal-image" id="modal-image" alt="Enlarged memory image">
+        <div class="modal-info" id="modal-info"></div>
+    </div>
+</div>
+
 </body>
 </html>
