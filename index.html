@@ -606,19 +606,10 @@
         </div>
         
         <div class="config-group">
-            <label class="config-label">Google Sheets ID (configured on server):</label>
-            <input type="text" id="sheets-id" class="config-input" 
-                   value="Loading from server..."
-                   disabled
-                   placeholder="Server configuration loading...">
-        </div>
-        
-        <div class="config-group">
-            <label class="config-label">Google Drive Folder ID (configured on server):</label>
-            <input type="text" id="folder-id" class="config-input" 
-                   value="Loading from server..."
-                   disabled
-                   placeholder="Server configuration loading...">
+            <label class="config-label">Configuration Status:</label>
+            <div id="config-status" class="config-input" style="background: #f8f9fa; padding: 12px; border-radius: 4px;">
+                Loading server configuration...
+            </div>
         </div>
         <div style="text-align: center;">
             <button class="btn" onclick="checkServerConnection()">🔍 Check Connection</button>
@@ -706,26 +697,41 @@
                 
                 serverConfig = data;
                 
-                // Update the admin panel with server values
-                document.getElementById('sheets-id').value = data.sheets_id || 'Not configured on server';
-                document.getElementById('folder-id').value = data.folder_id || 'Not configured on server';
+                // Update the admin panel with status only (no IDs shown)
+                const configStatus = document.getElementById('config-status');
+                let statusHTML = '';
                 
-                // Update status indicators
                 if (data.api_configured) {
-                    console.log('✅ API key configured on server');
+                    statusHTML += '✅ <strong>Google API:</strong> Configured<br>';
+                } else {
+                    statusHTML += '❌ <strong>Google API:</strong> Not configured<br>';
                 }
+                
                 if (data.folder_configured) {
-                    console.log('✅ Folder ID configured on server');
+                    statusHTML += '✅ <strong>Drive Folder:</strong> Configured<br>';
+                } else {
+                    statusHTML += '❌ <strong>Drive Folder:</strong> Not configured<br>';
                 }
+                
                 if (data.sheets_configured) {
-                    console.log('✅ Sheets ID configured on server');
+                    statusHTML += '✅ <strong>Google Sheets:</strong> Configured';
+                } else {
+                    statusHTML += '❌ <strong>Google Sheets:</strong> Not configured';
                 }
+                
+                configStatus.innerHTML = statusHTML;
+                
+                // Log to console for debugging (IDs still hidden)
+                console.log('✅ Server configuration loaded');
+                console.log(`   API configured: ${data.api_configured}`);
+                console.log(`   Folder configured: ${data.folder_configured}`);
+                console.log(`   Sheets configured: ${data.sheets_configured}`);
                 
                 return true;
             } catch (error) {
                 console.error('❌ Failed to load server configuration:', error);
-                document.getElementById('sheets-id').value = 'Error loading config';
-                document.getElementById('folder-id').value = 'Error loading config';
+                document.getElementById('config-status').innerHTML = 
+                    '❌ <span style="color: #e74c3c;">Error loading server configuration</span>';
                 return false;
             }
         }
