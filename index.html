@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -113,6 +112,13 @@
             color: #333;
             font-size: 11px;
             font-family: monospace;
+            /* Make read-only fields appear different */
+        }
+        
+        .config-input:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
         }
         
         .config-input:focus {
@@ -404,18 +410,6 @@
             display: block;
         }
 
-        /* Layout variations for visual interest */
-        /*.layout1 { border-left: 3px solid #3498db; }*/
-        /*.layout2 { border-top: 3px solid #e74c3c; }*/
-        /*.layout3 { border-right: 3px solid #2ecc71; }*/
-        /*.layout4 { border-bottom: 3px solid #f39c12; }*/
-        /*.layout5 { border: 2px solid #9b59b6; }*/
-        /*.layout6 { box-shadow: 0 4px 15px rgba(0,0,0,0.15); }*/
-        /*.layout7 { background: #fafafa; }*/
-        /*.layout8 { border-radius: 15px; }*/
-        /*.layout9 { border: 1px solid #34495e; }*/
-        /*.layout10 { background: linear-gradient(to bottom, #fff, #f8f8f8); }*/
-
         .image-modal {
             position: fixed;
             z-index: 2000;
@@ -612,17 +606,19 @@
         </div>
         
         <div class="config-group">
-            <label class="config-label">Google Sheets ID (from URL):</label>
+            <label class="config-label">Google Sheets ID (configured on server):</label>
             <input type="text" id="sheets-id" class="config-input" 
-                   value="2PACX-1vT5r0kIbYUTkDAp8tHFPnYs6_ZLJD3fMPpsL_17kI9hMsYCflngl72FEXsHJ_-AIuQ6UnIbu5nZPNLE"
-                   placeholder="1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p">
+                   value="Loading from server..."
+                   disabled
+                   placeholder="Server configuration loading...">
         </div>
         
         <div class="config-group">
-            <label class="config-label">Google Drive Folder ID:</label>
+            <label class="config-label">Google Drive Folder ID (configured on server):</label>
             <input type="text" id="folder-id" class="config-input" 
-                   value="1_WIs7bQ0IlsczjqoL6hmAvskuA9uDcNB"
-                   placeholder="1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p">
+                   value="Loading from server..."
+                   disabled
+                   placeholder="Server configuration loading...">
         </div>
         <div style="text-align: center;">
             <button class="btn" onclick="checkServerConnection()">🔍 Check Connection</button>
@@ -686,6 +682,7 @@
         let refreshTimer = null;
         let serverOnline = false;
         let adminMode = false;
+        let serverConfig = {}; // Store server configuration
         
         // Demo data
         const DEMO_DATA = [
@@ -700,6 +697,38 @@
             {nameArabic: "ليلى المصري", nameEnglish: "Layla al-Masri", nameHebrew: "לילא אל מסרי", dateOfBirth: "9.2.2023", age: "5 חודשים", visitor: "231", time: "15:17", date: "10.7.2025", index: 9},
             {nameArabic: "آدم حمادة", nameEnglish: "Adam Hamadeh", nameHebrew: "אדם חמאדה", dateOfBirth: "18.6.2023", age: "1 חודש", visitor: "240", time: "15:45", date: "10.7.2025", index: 10}
         ];
+        
+        // Load server configuration
+        async function loadServerConfig() {
+            try {
+                const response = await fetch(`${CONFIG.backendUrl}/api/config`);
+                const data = await response.json();
+                
+                serverConfig = data;
+                
+                // Update the admin panel with server values
+                document.getElementById('sheets-id').value = data.sheets_id || 'Not configured on server';
+                document.getElementById('folder-id').value = data.folder_id || 'Not configured on server';
+                
+                // Update status indicators
+                if (data.api_configured) {
+                    console.log('✅ API key configured on server');
+                }
+                if (data.folder_configured) {
+                    console.log('✅ Folder ID configured on server');
+                }
+                if (data.sheets_configured) {
+                    console.log('✅ Sheets ID configured on server');
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Failed to load server configuration:', error);
+                document.getElementById('sheets-id').value = 'Error loading config';
+                document.getElementById('folder-id').value = 'Error loading config';
+                return false;
+            }
+        }
         
         // Admin mode toggle
         function toggleAdminMode() {
@@ -758,6 +787,9 @@
                     document.getElementById('server-status').innerHTML = 
                         `<strong>🔒 Secure backend connected!</strong><br>
                          Authentication: API Key<br>
+                         API: ${data.api_configured ? '✅' : '❌'} | 
+                         Folder: ${data.folder_configured ? '✅' : '❌'} | 
+                         Sheets: ${data.sheets_configured ? '✅' : '❌'}<br>
                          Server time: ${new Date(data.timestamp).toLocaleTimeString()}`;
                     
                     if (adminMode) showMessage('✅ Connected to secure backend!', 'success');
@@ -784,17 +816,12 @@
                 return;
             }
             
-            const folderId = document.getElementById('folder-id').value.trim();
-            if (!folderId) {
-                if (adminMode) showMessage('❌ Please enter Google Drive folder ID', 'error');
-                return;
-            }
-            
             try {
                 if (adminMode) showLoading();
-                if (adminMode) showMessage('🔍 Securely discovering images...', 'info');
+                if (adminMode) showMessage('🔍 Securely discovering images using server configuration...', 'info');
                 
-                const response = await fetch(`${CONFIG.backendUrl}/api/discover/${folderId}`);
+                // Use the new endpoint that doesn't require folder ID parameter
+                const response = await fetch(`${CONFIG.backendUrl}/api/discover`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -802,7 +829,7 @@
                     document.getElementById('discovered-count').textContent = data.total_found;
                     
                     console.log('🎯 Discovered images:', discoveredImages);
-                    if (adminMode) showMessage(`🎉 Found ${data.total_found} images!`, 'success');
+                    if (adminMode) showMessage(`🎉 Found ${data.total_found} images using server folder ID!`, 'success');
                 } else {
                     throw new Error(data.error || 'Discovery failed');
                 }
@@ -815,14 +842,9 @@
         }
         
         async function loadGoogleSheets() {
-            const sheetsId = document.getElementById('sheets-id').value.trim();
-            if (!sheetsId) {
-                if (adminMode) showMessage('❌ Please enter Google Sheets ID', 'error');
-                return;
-            }
-            
             try {
-                const response = await fetch(`${CONFIG.backendUrl}/api/sheets/${sheetsId}`);
+                // Use the new endpoint that doesn't require sheets ID parameter
+                const response = await fetch(`${CONFIG.backendUrl}/api/sheets`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -831,7 +853,7 @@
                     document.getElementById('total-count').textContent = participantData.length;
                     
                     updatePublicStatus();
-                    if (adminMode) showMessage(`✅ Loaded ${participantData.length} memory cards`, 'success');
+                    if (adminMode) showMessage(`✅ Loaded ${participantData.length} memory cards using server sheets ID`, 'success');
                     return true;
                 } else {
                     throw new Error(data.error || 'Failed to load sheets');
@@ -859,7 +881,7 @@
             // Create memory cards and start
             createMemoryCards();
             startAutoRefresh();
-            if (adminMode) showMessage('🚀 Exhibition started! Auto-updating.', 'success');
+            if (adminMode) showMessage('🚀 Exhibition started with server configuration! Auto-updating.', 'success');
         }
         
         function parseCSV(csvText) {
@@ -1016,10 +1038,10 @@
             if (refreshTimer) clearInterval(refreshTimer);
             
             refreshTimer = setInterval(async () => {
-                const folderId = document.getElementById('folder-id').value.trim();
-                if (folderId && serverOnline) {
+                if (serverOnline) {
                     try {
-                        const response = await fetch(`${CONFIG.backendUrl}/api/discover/${folderId}`);
+                        // Use the server configuration endpoint instead of manual folder ID
+                        const response = await fetch(`${CONFIG.backendUrl}/api/discover`);
                         const data = await response.json();
                         
                         if (data.success) {
@@ -1151,7 +1173,7 @@
         // ✅ Declare globally at top of script
         let modal, modalImg, modalInfo, closeBtn;
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             console.log('🌐 Memory Cards Exhibition initialized');
             updateStats();
             
@@ -1165,6 +1187,10 @@
             modal.onclick = (e) => {
                 if (e.target === modal) modal.classList.remove('visible');
             };
+
+            // Load server configuration first
+            console.log('🔧 Loading server configuration...');
+            await loadServerConfig();
 
             // Auto-start the exhibition
             setTimeout(async () => {
