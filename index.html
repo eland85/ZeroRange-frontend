@@ -78,13 +78,15 @@
             }
             
             .title span {
+                
                 min-width: auto !important; /* Remove fixed width */
                 font-size: 22px !important; /* Reduced from 35px for English */
             }
             
-            .title span:nth-child(2) span { /* Arabic */
-                font-size: 20px;
-            }
+            .title span:nth-child(1) { order: 1 !important; } /* Hebrew */
+            .title span:nth-child(2) { order: 2 !important; } /* Arabic */
+            .title span:nth-child(3) { order: 3 !important; } /* English */
+
             
             /* Subtitle adjustments for mobile */
             .subtitle {
