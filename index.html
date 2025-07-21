@@ -36,14 +36,14 @@
             padding-top: 20px;
             color: #ffffff;
         }
-        
+
         .subtitle {
             font-size: 1.2em;
             color: #ffffff;
             font-weight: 300;
             margin-bottom: 50px;
         }
-        
+
         .public-status {
             font-size: 30px;
             color: #ffffff;
@@ -53,6 +53,129 @@
             display: inline-block;
         }
         
+                /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            .title { font-size: 1.5em; /* ... */ }
+            .subtitle { font-size: 0.9em; /* ... */ }
+            .public-status { font-size: 20px; /* ... */ }
+        }
+            /* Reduce overall padding on mobile */
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 15px 10px 30px 10px;
+                margin-bottom: 20px;
+            }
+            
+            /* Title adjustments for mobile */
+            .title {
+                font-size: 1.5em; /* Reduced from 2.5em */
+                letter-spacing: 1px; /* Reduced from 3px */
+                padding-bottom: 12px;
+                gap: 10px !important; /* Reduced from 18px */
+            }
+            
+            .title span {
+                min-width: auto !important; /* Remove fixed width */
+                font-size: 22px !important; /* Reduced from 35px for English */
+            }
+            
+            .title span:nth-child(2) span { /* Arabic */
+                font-size: 20px;
+            }
+            
+            /* Subtitle adjustments for mobile */
+            .subtitle {
+                font-size: 0.9em; /* Reduced from 1.2em */
+                margin-bottom: 30px; /* Reduced from 50px */
+                gap: 10px !important; /* Reduced from 18px */
+            }
+            
+            .subtitle span {
+                min-width: auto !important; /* Remove fixed width */
+                font-size: 14px;
+            }
+            
+            /* Status counter adjustments */
+            .public-status {
+                font-size: 20px; /* Reduced from 30px */
+                padding: 8px 16px;
+            }
+            
+            /* Adjust memory cards for mobile */
+            .memory-card {
+                width: 100%; /* Full width on mobile */
+                max-width: 350px; /* But not too wide */
+                height: auto; /* Auto height */
+                min-height: 500px;
+            }
+            
+            .grid {
+                gap: 20px; /* Reduced gap */
+                padding: 10px 0;
+            }
+
+        /* Even smaller screens (phones in portrait) */
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.2em;
+                flex-direction: row !important; /* Stack vertically */
+                gap: 5px !important;
+            }
+            
+            .title span {
+                font-size: 20px !important;
+                text-align: center !important;
+                order: unset !important; /* Reset order for vertical stack */
+            }
+            
+            /* Show in correct order when stacked: Hebrew, Arabic, English */
+            .title span:nth-child(1) { order: 1 !important; } /* Hebrew */
+            .title span:nth-child(2) { order: 2 !important; } /* Arabic */
+            .title span:nth-child(3) { order: 3 !important; } /* English */
+            
+            .subtitle {
+                font-size: 0.8em;
+                flex-direction: row !important; /* Stack vertically */
+                gap: 3px !important;
+            }
+            
+            .subtitle span {
+                font-size: 13px;
+                text-align: center !important;
+                order: unset !important;
+            }
+            
+            /* Same order for subtitle */
+            .subtitle span:nth-child(1) { order: 1 !important; } /* Hebrew */
+            .subtitle span:nth-child(2) { order: 2 !important; } /* Arabic */
+            .subtitle span:nth-child(3) { order: 3 !important; } /* English */
+            
+            .public-status {
+                font-size: 18px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .header {
+                padding: 10px 10px 20px 10px;
+            }
+            
+            .title {
+                font-size: 1.3em;
+                margin-bottom: 5px;
+            }
+            
+            .subtitle {
+                font-size: 0.85em;
+                margin-bottom: 20px;
+            }
+        }
+
         /* ADMIN PANEL - Hidden by default */
         .admin-panel {
             display: none;
