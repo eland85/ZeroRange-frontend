@@ -53,7 +53,7 @@
             display: inline-block;
         }
         
-                /* Mobile responsive styles */
+            /* Mobile responsive styles */
         @media (max-width: 768px) {
             .title { font-size: 1.5em; /* ... */ }
             .subtitle { font-size: 0.9em; /* ... */ }
@@ -76,16 +76,21 @@
                 letter-spacing: 1px; /* Reduced from 3px */
                 padding-bottom: 12px;
                 gap: 10px !important; /* Reduced from 18px */
+                justify-content: center !important; /* Center the content */
+                align-items: center !important;
             }
             
             .title span {
                 min-width: auto !important; /* Remove fixed width */
                 font-size: 22px !important; /* Reduced from 35px for English */
+                text-align: center !important;
+                flex: 1 !important; /* Equal width distribution */
             }
             
-            .title span:nth-child(3) { order: 3 !important; } /* Hebrew */
-            .title span:nth-child(2) { order: 2 !important; } /* Arabic */
-            .title span:nth-child(1) { order: 1 !important; } /* English */
+            /* Arrange: English (left), Arabic (center), Hebrew (right) */
+            .title span:nth-child(1) { order: 1 !important; } /* English - left */
+            .title span:nth-child(2) { order: 2 !important; } /* Arabic - center */
+            .title span:nth-child(3) { order: 3 !important; } /* Hebrew - right */
 
             
             /* Subtitle adjustments for mobile */
@@ -94,12 +99,21 @@
                 font-size: 0.9em; /* Reduced from 1.2em */
                 margin-bottom: 30px; /* Reduced from 50px */
                 gap: 10px !important; /* Reduced from 18px */
+                justify-content: center !important; /* Center the content */
+                align-items: center !important;
             }
             
             .subtitle span {
                 min-width: auto !important; /* Remove fixed width */
                 font-size: 14px;
+                text-align: center !important;
+                flex: 1 !important; /* Equal width distribution */
             }
+            
+            /* Same order for subtitle: English (left), Arabic (center), Hebrew (right) */
+            .subtitle span:nth-child(1) { order: 1 !important; } /* English - left */
+            .subtitle span:nth-child(2) { order: 2 !important; } /* Arabic - center */
+            .subtitle span:nth-child(3) { order: 3 !important; } /* Hebrew - right */
             
             /* Status counter adjustments */
             .public-status {
@@ -125,37 +139,43 @@
         @media (max-width: 480px) {
             .title {
                 font-size: 1.2em;
-                flex-direction: column !important; /* Stack vertically */
-                gap: 5px !important;
+                flex-direction: row !important; /* Keep horizontal layout */
+                justify-content: center !important; /* Center the content */
+                align-items: center !important;
+                gap: 10px !important; /* Smaller gap for mobile */
             }
             
             .title span {
-                font-size: 20px !important;
+                font-size: 16px !important; /* Smaller font for mobile */
                 text-align: center !important;
-                order: unset !important; /* Reset order for vertical stack */
+                min-width: auto !important; /* Remove fixed width */
+                flex: 1 !important; /* Equal width distribution */
             }
             
-            /* Show in correct order when stacked: Hebrew, Arabic, English */
-            .title span:nth-child(3) { order: 3 !important; } /* Hebrew */
-            .title span:nth-child(2) { order: 2 !important; } /* Arabic */
-            .title span:nth-child(1) { order: 1 !important; } /* English */
+            /* Arrange: English (left), Arabic (center), Hebrew (right) */
+            .title span:nth-child(1) { order: 1 !important; } /* English - left */
+            .title span:nth-child(2) { order: 2 !important; } /* Arabic - center */
+            .title span:nth-child(3) { order: 3 !important; } /* Hebrew - right */
             
             .subtitle {
                 font-size: 0.8em;
-                flex-direction: column !important; /* Stack vertically */
-                gap: 3px !important;
+                flex-direction: row !important; /* Keep horizontal layout */
+                justify-content: center !important; /* Center the content */
+                align-items: center !important;
+                gap: 8px !important; /* Smaller gap for mobile */
             }
             
             .subtitle span {
-                font-size: 13px;
+                font-size: 11px !important; /* Smaller font for mobile */
                 text-align: center !important;
-                order: unset !important;
+                min-width: auto !important; /* Remove fixed width */
+                flex: 1 !important; /* Equal width distribution */
             }
             
-            /* Same order for subtitle */
-            .subtitle span:nth-child(3) { order: 3 !important; } /* Hebrew */
-            .subtitle span:nth-child(2) { order: 2 !important; } /* Arabic */
-            .subtitle span:nth-child(1) { order: 1 !important; } /* English */
+            /* Same order for subtitle: English (left), Arabic (center), Hebrew (right) */
+            .subtitle span:nth-child(1) { order: 1 !important; } /* English - left */
+            .subtitle span:nth-child(2) { order: 2 !important; } /* Arabic - center */
+            .subtitle span:nth-child(3) { order: 3 !important; } /* Hebrew - right */
 
             .public-status {
                 font-size: 18px;
