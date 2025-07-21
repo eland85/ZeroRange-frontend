@@ -444,6 +444,23 @@
             max-height: 90%;
         }
 
+        /* When info is hidden, center the image */
+        .modal-content:has(.modal-info[style*="display: none"]) {
+            justify-content: center;
+        }
+
+        /* Adjust image size based on whether info is shown */
+        .modal-content:has(.modal-info[style*="display: none"]) img {
+            max-width: 95%;
+            max-height: 95vh;
+        }
+
+        /* Default image size when info is shown */
+        .modal-content:has(.modal-info[style*="display: block"]) img {
+            max-width: 70%;
+            max-height: 90vh;
+        }
+
         .image-modal img {
             max-width: 90%;
             max-height: 95vh;
@@ -663,7 +680,8 @@
         // Configuration
         const CONFIG = {
             backendUrl: 'https://web-production-45622.up.railway.app',
-            refreshInterval: 30000 // 30 seconds
+            refreshInterval: 30000, // 30 seconds
+            showModalInfo: false  // ← TOGGLE THIS: true to show info panel, false to hide it
         };
         
         // Global state
@@ -1214,26 +1232,33 @@
 
         function openImageModal(src, card) {
             modalImg.src = src;
+            
+            // Only populate info if showModalInfo is true
+            if (CONFIG.showModalInfo && modalInfo) {
+                const dateTime = card.querySelector('.date-time').textContent;
+                const visitor = card.querySelector('.visitor-num').textContent;
+                const nameArabic = card.querySelector('.name-arabic').textContent;
+                const nameHebrew = card.querySelector('.name-hebrew').textContent;
+                const nameEnglish = card.querySelector('.name-english').textContent;
 
-            const dateTime = card.querySelector('.date-time').textContent;
-            const visitor = card.querySelector('.visitor-num').textContent;
-            const nameArabic = card.querySelector('.name-arabic').textContent;
-            const nameHebrew = card.querySelector('.name-hebrew').textContent;
-            const nameEnglish = card.querySelector('.name-english').textContent;
-
-            modalInfo.innerHTML = `
-                <div class="modal-visitor-line">
-                    <span style="font-size: 14px;color: rgba(255,255,255,0.7);">מבקר.ת</span>
-                    <span style="font-size: 14px; color: rgba(255,255,255,0.7);margin: 0 8px;">زائر/ة</span>
-                    <span style="font-size: 13px;color: rgba(255,255,255,0.7);">Visitor</span>
-                </div>
-                <div style="font-size: 16px; font-weight: bold; margin-bottom: 15px; color: rgba(255,255,255,0.7);">${visitor}</div>
-                <strong>${nameArabic}</strong>
-                <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${nameHebrew}</div>
-                <div style="font-size: 16px; font-weight: bold; color: rgba(255,255,255,0.9); text-align: right; direction: ltr;">${nameEnglish}</div>
-                <small>${dateTime}</small>
-            `;
-
+                modalInfo.innerHTML = `
+                    <div class="modal-visitor-line">
+                        <span style="font-size: 14px;color: rgba(255,255,255,0.7);">מבקר.ת</span>
+                        <span style="font-size: 14px; color: rgba(255,255,255,0.7);margin: 0 8px;">زائر/ة</span>
+                        <span style="font-size: 13px;color: rgba(255,255,255,0.7);">Visitor</span>
+                    </div>
+                    <div style="font-size: 16px; font-weight: bold; margin-bottom: 15px; color: rgba(255,255,255,0.7);">${visitor}</div>
+                    <strong>${nameArabic}</strong>
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${nameHebrew}</div>
+                    <div style="font-size: 16px; font-weight: bold; color: rgba(255,255,255,0.9); text-align: right; direction: ltr;">${nameEnglish}</div>
+                    <small>${dateTime}</small>
+                `;
+                
+                modalInfo.style.display = 'block';
+            } else if (modalInfo) {
+                modalInfo.style.display = 'none';
+            }
+            
             // Force a reflow to ensure the transition works
             modal.offsetHeight;
             modal.classList.add('visible');
