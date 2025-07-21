@@ -58,7 +58,7 @@
             .title { font-size: 1.5em; /* ... */ }
             .subtitle { font-size: 0.9em; /* ... */ }
             .public-status { font-size: 20px; /* ... */ }
-        }
+
             /* Reduce overall padding on mobile */
             body {
                 padding: 10px;
@@ -71,6 +71,7 @@
             
             /* Title adjustments for mobile */
             .title {
+                display: flex !important;
                 font-size: 1.5em; /* Reduced from 2.5em */
                 letter-spacing: 1px; /* Reduced from 3px */
                 padding-bottom: 12px;
@@ -78,7 +79,6 @@
             }
             
             .title span {
-                
                 min-width: auto !important; /* Remove fixed width */
                 font-size: 22px !important; /* Reduced from 35px for English */
             }
@@ -90,6 +90,7 @@
             
             /* Subtitle adjustments for mobile */
             .subtitle {
+                display: flex !important;
                 font-size: 0.9em; /* Reduced from 1.2em */
                 margin-bottom: 30px; /* Reduced from 50px */
                 gap: 10px !important; /* Reduced from 18px */
@@ -118,6 +119,7 @@
                 gap: 20px; /* Reduced gap */
                 padding: 10px 0;
             }
+        }
 
         /* Even smaller screens (phones in portrait) */
         @media (max-width: 480px) {
@@ -569,18 +571,18 @@
         }
 
         /* When info is hidden, center the image */
-        .modal-content:has(.modal-info[style*="display: none"]) {
+        .modal-content.info-hidden {
             justify-content: center;
         }
 
         /* Adjust image size based on whether info is shown */
-        .modal-content:has(.modal-info[style*="display: none"]) img {
+        .modal-content.info-hidden img {
             max-width: 95%;
             max-height: 95vh;
         }
 
         /* Default image size when info is shown */
-        .modal-content:has(.modal-info[style*="display: block"]) img {
+        .modal-content.info-shown img {
             max-width: 70%;
             max-height: 90vh;
         }
@@ -1379,8 +1381,12 @@
                 `;
                 
                 modalInfo.style.display = 'block';
+                modal.querySelector('.modal-content').classList.remove('info-hidden');
+                modal.querySelector('.modal-content').classList.add('info-shown');
             } else if (modalInfo) {
                 modalInfo.style.display = 'none';
+                modal.querySelector('.modal-content').classList.remove('info-shown');
+                modal.querySelector('.modal-content').classList.add('info-hidden');
             }
             
             // Force a reflow to ensure the transition works
