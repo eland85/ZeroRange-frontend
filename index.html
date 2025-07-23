@@ -833,10 +833,12 @@
         // Configuration
         const CONFIG = {
             backendUrl: 'https://web-production-45622.up.railway.app',
-            refreshInterval: 30000, // 30 seconds
-            showModalInfo: false  // ← TOGGLE THIS: true to show info panel, false to hide it
+            refreshInterval: 30000,
+            showModalInfo: false,
+            autoScrollToLatest: true, // ← ADD THIS
+            scrollDelay: 2000 // ← ADD THIS (delay in milliseconds)
         };
-        
+
         // Global state
         let participantData = [];
         let discoveredImages = {};
@@ -893,6 +895,48 @@
             }
         }
         
+        function scrollToMostRecentImage() {
+            if (!CONFIG.autoScrollToLatest) return;
+            
+            setTimeout(() => {
+                let mostRecentCard = null;
+                let mostRecentTime = null;
+                
+                // Find the card with the most recent image upload
+                for (const participant of participantData) {
+                    const index = participant.index;
+                    
+                    if (loadedImages.has(index) && discoveredImages[index]) {
+                        const imageData = discoveredImages[index];
+                        const modifiedTime = new Date(imageData.modified);
+                        
+                        if (!mostRecentTime || modifiedTime > mostRecentTime) {
+                            mostRecentTime = modifiedTime;
+                            mostRecentCard = document.getElementById(`card-${index}`);
+                        }
+                    }
+                }
+                
+                if (mostRecentCard) {
+                    console.log(`📍 Auto-scrolling to most recent image: ${mostRecentTime.toLocaleString()}`);
+                    
+                    mostRecentCard.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                        inline: 'nearest'
+                    });
+                    
+                    // Optional: Add subtle highlight effect
+                    mostRecentCard.style.transition = 'box-shadow 2s ease';
+                    mostRecentCard.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
+                    
+                    setTimeout(() => {
+                        mostRecentCard.style.boxShadow = '';
+                    }, 3000);
+                }
+            }, CONFIG.scrollDelay);
+        }
+
         // Admin mode toggle
         function toggleAdminMode() {
             adminMode = !adminMode;
@@ -1034,16 +1078,16 @@
                 return;
             }
             
-            // Load Google Sheets data
             const sheetsLoaded = await loadGoogleSheets();
             if (!sheetsLoaded) return;
             
-            // Discover images
             await discoverImages();
-            
-            // Create memory cards and start
             createMemoryCards();
             startAutoRefresh();
+            
+            // 🆕 ADD THIS LINE:
+            scrollToMostRecentImage();
+            
             if (adminMode) showMessage('🚀 Exhibition started with server configuration! Auto-updating.', 'success');
         }
         
