@@ -924,7 +924,7 @@
                     console.log(`📍 Auto-scrolling to most recent image: ${mostRecentTime.toLocaleString()}`);
                     
                     // Custom scroll animation with CONSTANT DURATION regardless of distance
-                    const targetPosition = mostRecentCard.offsetTop - (window.innerHeight / 4);
+                    const targetPosition = mostRecentCard.offsetTop - (window.innerHeight / 10);
                     const startPosition = window.pageYOffset;
                     const distance = targetPosition - startPosition;
                     const constantDuration = CONFIG.scrollDuration; // Use configurable duration
