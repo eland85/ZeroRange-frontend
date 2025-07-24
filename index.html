@@ -836,8 +836,10 @@
             refreshInterval: 30000,
             showModalInfo: false,
             autoScrollToLatest: true, // ← ADD THIS
-            scrollDelay: 2000 // ← ADD THIS (delay in milliseconds)
-        };
+            scrollDelay: 3000, // ← ADD THIS (delay in milliseconds)
+            scrollDuration: 6000 // ← ADD THIS: constant scroll duration in milliseconds
+
+      };
 
         // Global state
         let participantData = [];
@@ -895,6 +897,7 @@
             }
         }
         
+        // ...existing code...
         function scrollToMostRecentImage() {
             if (!CONFIG.autoScrollToLatest) return;
             
@@ -920,19 +923,40 @@
                 if (mostRecentCard) {
                     console.log(`📍 Auto-scrolling to most recent image: ${mostRecentTime.toLocaleString()}`);
                     
-                    mostRecentCard.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center',
-                        inline: 'nearest'
-                    });
+                    // Custom scroll animation with CONSTANT DURATION regardless of distance
+                    const targetPosition = mostRecentCard.offsetTop - (window.innerHeight / 4);
+                    const startPosition = window.pageYOffset;
+                    const distance = targetPosition - startPosition;
+                    const constantDuration = CONFIG.scrollDuration; // Use configurable duration
+
+                    console.log(`🎯 Scrolling ${Math.abs(distance)}px in ${constantDuration/1000} seconds`);
+
+                    let start = null;
                     
-                    // Optional: Add subtle highlight effect
-                    mostRecentCard.style.transition = 'box-shadow 2s ease';
-                    mostRecentCard.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
+                    function animateScroll(timestamp) {
+                        if (!start) start = timestamp;
+                        const progress = timestamp - start;
+                        const percentage = Math.min(progress / constantDuration, 1);
+                        
+                        // Ease-in-out function for slow start and slow end
+                        const ease = 0.5 * (1 - Math.cos(Math.PI * percentage));
+                        
+                        window.scrollTo(0, startPosition + (distance * ease));
+                        
+                        if (progress < constantDuration) {
+                            requestAnimationFrame(animateScroll);
+                        } else {
+                            // Add highlight effect after scroll completes
+                            mostRecentCard.style.transition = 'box-shadow 2s ease';
+                            mostRecentCard.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.2)';
+                            
+                            setTimeout(() => {
+                                mostRecentCard.style.boxShadow = '';
+                            }, 3000);
+                        }
+                    }
                     
-                    setTimeout(() => {
-                        mostRecentCard.style.boxShadow = '';
-                    }, 3000);
+                    requestAnimationFrame(animateScroll);
                 }
             }, CONFIG.scrollDelay);
         }
